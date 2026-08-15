@@ -1,7 +1,7 @@
 -- Flyway Initial Migration Schema
 CREATE TABLE urls (
     id BIGSERIAL PRIMARY KEY,
-    short_code VARCHAR(10) NOT NULL UNIQUE,
+    short_code VARCHAR(10) NULL UNIQUE,
     original_url TEXT NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

@@ -43,10 +43,13 @@ public class UrlShortenerService {
         mapping.setOriginalUrl(request.getOriginalUrl());
         mapping.setActive(true);
 
+        OffsetDateTime now = OffsetDateTime.now();
+        mapping.setCreatedAt(now);
+
         if (request.getExpiresAt() != null) {
             mapping.setExpiresAt(request.getExpiresAt());
         } else if (request.getTtlSeconds() != null && request.getTtlSeconds() > 0) {
-            mapping.setExpiresAt(OffsetDateTime.now().plusSeconds(request.getTtlSeconds()));
+            mapping.setExpiresAt(now.plusSeconds(request.getTtlSeconds()));
         }
 
         // Save first to obtain generated database ID
