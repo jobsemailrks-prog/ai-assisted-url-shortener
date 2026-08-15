@@ -29,10 +29,10 @@ public class UrlMapping {
     @Column(name = "expires_at")
     private OffsetDateTime expiresAt;
 
-    @Column(nullable = false)
+    @Column(name = "is_active", nullable = false)
     private boolean active = true;
 
-    @Column(nullable = false)
+    @Column(name = "click_count", nullable = false)
     private long clickCount = 0;
 
     @PrePersist

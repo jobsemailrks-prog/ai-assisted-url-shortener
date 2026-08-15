@@ -24,6 +24,16 @@ public class UrlShortenerController {
         this.urlShortenerService = urlShortenerService;
     }
 
+    /**
+     * Basic liveness check - confirms the app process is up and routing requests.
+     * Does NOT verify DB/Redis connectivity; a deeper health check would use Spring Boot
+     * Actuator's /actuator/health, which is not wired in for this prototype.
+     */
+    @GetMapping
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("URL shortener API is running");
+    }
+
     @PostMapping
     public ResponseEntity<UrlResponse> shortenUrl(@Valid @RequestBody ShortenUrlRequest request,
                                                   HttpServletRequest servletRequest) {

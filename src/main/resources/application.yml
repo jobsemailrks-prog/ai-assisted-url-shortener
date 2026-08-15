@@ -10,7 +10,11 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      # Flyway (below) is the single source of truth for schema. `validate` makes Hibernate
+      # confirm the entity mappings match the migrated schema at startup and fail fast on
+      # drift, instead of silently auto-creating/altering tables (previous `update` setting
+      # meant the V1 migration below was never actually exercised - fixed as part of review).
+      ddl-auto: validate
     show-sql: false
     open-in-view: false
     properties:
@@ -26,6 +30,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
 
 server:
   port: 8080
