@@ -44,7 +44,7 @@ and what ships. `docs/AI_TRACEABILITY.md` is the concrete evidence trail for tha
 |---|---|
 | Working service (Spring Boot 3.3.3, Java 21) | `src/main/java/...` |
 | Schema migrations (Flyway) | `src/main/resources/db/migration/V1__init_schema.sql`, `V2__add_click_count_column.sql` |
-| Unit tests (14 total: encoder, service, controller) | `src/test/java/...` |
+| Unit tests (24 total: encoder, service, controller, redirect) | `src/test/java/...` |
 | Docker Compose (app + Postgres + Redis) | `docker-compose.yml`, `Dockerfile` |
 | CI workflow (build + test on push/PR) | `.github/workflows/ci.yml` |
 | Architecture overview | `docs/ARCHITECTURE.md` |
@@ -55,13 +55,14 @@ and what ships. `docs/AI_TRACEABILITY.md` is the concrete evidence trail for tha
 
 ## Validation performed
 
-- `mvn clean verify`: **14/14 tests passing** in the last real local run confirmed
-  before this pass (Java 21.0.3, `BUILD SUCCESS`). **10 additional tests were added
-  in this pass** (`RedirectControllerTest` + TTL/validation/analytics-404 cases) and
-  have **not yet been run** — run `mvn clean verify` and update this line with the
-  real result before treating the suite as fully verified. Total test count in the
-  codebase is 24; only 14 have a confirmed passing run behind them as of this
-  writing.
+- `mvn clean verify`: **24/24 tests passing**, confirmed both in a local run
+  (Java 21.0.3, `BUILD SUCCESS`) and independently in GitHub Actions CI on a
+  clean runner (`Tests run: 24, Failures: 0, Errors: 0, Skipped: 0`,
+  `BUILD SUCCESS`). This includes the 10 tests added in this pass
+  (`RedirectControllerTest` + TTL/validation/analytics-404 cases), which were
+  unverified at an earlier point in this process and have since been confirmed
+  passing in both environments.
+  
 - Live end-to-end verification via `docker-compose up --build`:
   - `POST /api/urls` → `201 Created` with correct payload
   - `GET /{code}` → `302 Found` with correct `Location` header
