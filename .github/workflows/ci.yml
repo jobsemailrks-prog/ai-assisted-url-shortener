@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # `mvn verify` runs compile -> test -> package in one pass; separate
+      # install/test/package invocations (as before) redundantly re-run the
+      # same lifecycle phases and just slow the pipeline down.
+      - name: Build and test
+        run: mvn -B verify
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports/
+
+  # Deployment is intentionally left as a separate, manually-gated job stub rather than an
+  # unconditional `echo "Deploying..."` step on every push to main - the assignment requires
+  # human sign-off for high-impact changes, and auto-deploying on every merge to main
+  # bypasses that. Wire this to a real deploy step once there's an actual target environment.
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment: production  # requires manual approval via GitHub Environments
+  #   steps:
+  #     - run: echo "Add real deployment steps here"
